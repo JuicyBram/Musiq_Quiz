@@ -59,7 +59,7 @@ public class AudioFileController : ControllerBase
         var audioFileDto = new AudioFileDTO
         {
             Id = audioFile.Id,
-            Name = audioFile.Name?.Name,  // Handle null values as in the GetAudioFiles method
+            Name = audioFile.Name?.Name,
             FullSongBase64 = audioFile.FullSongBase64,
             GuitarSoloBase64 = audioFile.GuitarSoloBase64,
             FullSongDuration = audioFile.FullSongDuration,
