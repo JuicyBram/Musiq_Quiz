@@ -43,16 +43,30 @@ public class AudioFileController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AudioFile>> GetAudioFile(int id)
+    public async Task<ActionResult<AudioFileDTO>> GetAudioFile(int id)
     {
-        var audioFile = await _context.AudioFiles.FindAsync(id);
+        // Include the related data (e.g., Name) and find the audio file by ID
+        var audioFile = await _context.AudioFiles
+                                      .Include(af => af.Name)  // Including related data as done in GetAudioFiles
+                                      .FirstOrDefaultAsync(af => af.Id == id);  // Finding the audio file by its ID
 
         if (audioFile == null)
         {
             return NotFound();
         }
 
-        return audioFile;
+        // Map the AudioFile entity to AudioFileDTO
+        var audioFileDto = new AudioFileDTO
+        {
+            Id = audioFile.Id,
+            Name = audioFile.Name?.Name,  // Handle null values as in the GetAudioFiles method
+            FullSongBase64 = audioFile.FullSongBase64,
+            GuitarSoloBase64 = audioFile.GuitarSoloBase64,
+            FullSongDuration = audioFile.FullSongDuration,
+            GuitarSoloDuration = audioFile.GituarSoloDuration
+        };
+
+        return Ok(audioFileDto);
     }
 
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
