@@ -49,7 +49,7 @@ namespace MusicQuiz.Controllers
             }
 
             //get list of songs for the current round from DB
-            List<AudioFile> songs = new List<AudioFile>();
+            List<FSAudioFile> songs = new List<FSAudioFile>();
             for (int i = 2; i < 4; i++)
             {
                 FSAudioFile song = await _context.FSAudioFiles.FindAsync(i);

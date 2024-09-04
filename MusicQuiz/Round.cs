@@ -7,7 +7,7 @@ namespace MusicQuiz
         public int Number { get; private set; }
         public string Name {  get; private set; }
         public int Score {  get; set; }
-        public List<AudioFile> Songs { get; private set; }
+        public List<FSAudioFile> Songs { get; private set; }
 
         public Round(int number, string name, List<FSAudioFile> songs)
         {
