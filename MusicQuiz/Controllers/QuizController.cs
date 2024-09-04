@@ -15,26 +15,36 @@ namespace MusicQuiz.Controllers
     {
         private readonly MusicQuizDBContext _context;
 
-        private List<Quiz> QuizList;
 
         public QuizController(MusicQuizDBContext context)
         {
             _context = context;
-            QuizList = new List<Quiz>();
         }
 
         [HttpGet("startquiz")]
         public async Task<ActionResult<Quiz>> GetAudioFiles()
         {
             Quiz quiz = new Quiz();
-            while(QuizList.FindIndex(q => q.Id == quiz.Id) >= 0)
+            while(GameList.Quizzes.FindIndex(q => q.Id == quiz.Id) >= 0)
             {
                 quiz = new Quiz();
             }
+            GameList.Quizzes.Add(quiz);
+            return quiz;
+        }
 
-            //get list of songs for first round from DB
+        [HttpGet("roundinfo/{id}/{roundnumber}")]
+        public async Task<ActionResult<Round>> GetRoundInfo(int id, int roundnumber)
+        {
+            Quiz quiz = GameList.Quizzes.Find(q => q.Id == id);
+            if (quiz == null || quiz.Id <= 999 || quiz.Id >9999)
+            {
+                return null;
+            }
+
+            //get list of songs for the current round from DB
             List<AudioFile> songs = new List<AudioFile>();
-            for(int i = 2; i < 4; i++)
+            for (int i = 2; i < 4; i++)
             {
                 AudioFile song = await _context.AudioFiles.FindAsync(i);
                 if (song != null)
@@ -43,7 +53,25 @@ namespace MusicQuiz.Controllers
                 }
             }
             quiz.AddRound("solos", songs);
-            return quiz;
+            return quiz.Rounds[roundnumber-1];
         }
+
+        [HttpPost("roundscore/{id}/{roundnumber}/{score}")]
+        public async Task<ActionResult<int>> PostRoundScore(int id, int roundnumber, int score)
+        {
+            Quiz quiz = GameList.Quizzes.Find(q => q.Id == id);
+            if (quiz == null || quiz.Id <= 999 || quiz.Id > 9999)
+            {
+                return 0;
+            }
+            quiz.TotalScore = 0;
+            quiz.Rounds[roundnumber - 1].Score = score;
+            foreach (Round round in quiz.Rounds)
+            {
+                quiz.TotalScore += round.Score;
+            }
+            return quiz.TotalScore;
+        }
+
     }
 }
