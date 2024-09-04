@@ -43,13 +43,25 @@ public class AudioFileController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<AudioFileDTO>> GetAudioFile(int id)
     {
+        Task<AudioFileDTO> audioFileDto = GetAudioFileDTO(id);
+        if (audioFileDto == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(audioFileDto);
+    }
+
+    [NonAction]
+    public async Task<AudioFileDTO> GetAudioFileDTO(int id)
+    {
         var audioFile = await _context.FSAudioFiles
-                                      .Include(af => af.Name) 
-                                      .FirstOrDefaultAsync(af => af.Id == id);  
+                                      .Include(af => af.Name)
+                                      .FirstOrDefaultAsync(af => af.Id == id);
 
         if (audioFile == null)
         {
-            return NotFound();
+            return null;
         }
 
         var audioFileDto = new AudioFileDTO
@@ -60,7 +72,7 @@ public class AudioFileController : ControllerBase
             FullSongDuration = audioFile.FullSongDuration,
         };
 
-        return Ok(audioFileDto);
+        return audioFileDto;
     }
 
     [HttpPut("{id}")]

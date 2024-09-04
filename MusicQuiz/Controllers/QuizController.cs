@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicQuiz.Data;
 using MusicQuiz.Data.Models;
+using MusicQuiz.DTOs;
 
 namespace MusicQuiz.Controllers
 {
@@ -49,10 +50,11 @@ namespace MusicQuiz.Controllers
             }
 
             //get list of songs for the current round from DB
-            List<FSAudioFile> songs = new List<FSAudioFile>();
-            for (int i = 2; i < 4; i++)
+            List<AudioFileDTO> songs = new List<AudioFileDTO>();
+            AudioFileController controller = new AudioFileController(_context);
+            for (int i = 2; i < 5; i++)
             {
-                FSAudioFile song = await _context.FSAudioFiles.FindAsync(i);
+                AudioFileDTO song = await controller.GetAudioFileDTO(i);
                 if (song != null)
                 {
                     songs.Add(song);

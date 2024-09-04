@@ -1,6 +1,7 @@
 using MusicQuiz.Controllers;
 using MusicQuiz.Data;
 using MusicQuiz.Data.Models;
+using MusicQuiz.DTOs;
 
 namespace MusicQuiz
 {
@@ -23,7 +24,7 @@ namespace MusicQuiz
             List<FSAudioFile> audioFiles = new List<FSAudioFile>();        
         }
 
-        public void AddRound(string name, List<FSAudioFile> songs)
+        public void AddRound(string name, List<AudioFileDTO> songs)
         {
             CurrentRound++;
             Rounds.Add(new Round(CurrentRound, name, songs));
