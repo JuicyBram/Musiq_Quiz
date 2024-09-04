@@ -16,16 +16,17 @@ public class MusicQuizDBContext : DbContext
     {
     }
 
-    public DbSet<AudioFile> AudioFiles { get; set; }
+    public DbSet<FSAudioFile> FSAudioFiles { get; set; }
+    public DbSet<GSAudioFile> GSAudioFiles { get; set; }
 
     public DbSet<SongName> SongNames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AudioFile>()
-            .HasOne(a => a.SongName)
-            .WithOne(s => s.AudioFile)
-            .HasForeignKey<SongName>(s => s.AudioFileId)
+        modelBuilder.Entity<FSAudioFile>()
+            .HasOne(a => a.Name)
+            .WithOne(s => s.FSAudioFile)
+            .HasForeignKey<SongName>(s => s.FSAudioFileId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade); // Stel de Foreign Key in op SongName
 

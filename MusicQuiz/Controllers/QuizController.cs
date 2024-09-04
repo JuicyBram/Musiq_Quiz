@@ -33,10 +33,10 @@ namespace MusicQuiz.Controllers
             }
 
             //get list of songs for first round from DB
-            List<AudioFile> songs = new List<AudioFile>();
+            List<FSAudioFile> songs = new List<FSAudioFile>();
             for(int i = 2; i < 4; i++)
             {
-                AudioFile song = await _context.AudioFiles.FindAsync(i);
+                FSAudioFile song = await _context.FSAudioFiles.FindAsync(i);
                 if (song != null)
                 {
                     songs.Add(song);

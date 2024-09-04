@@ -21,7 +21,7 @@ namespace MusicQuiz.Data.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MusicQuiz.Data.Models.AudioFile", b =>
+            modelBuilder.Entity("MusicQuiz.Data.Models.FSAudioFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,6 +36,19 @@ namespace MusicQuiz.Data.Data.Migrations
                     b.Property<float>("FullSongDuration")
                         .HasColumnType("real");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("FSAudioFiles");
+                });
+
+            modelBuilder.Entity("MusicQuiz.Data.Models.GSAudioFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<float>("GituarSoloDuration")
                         .HasColumnType("real");
 
@@ -45,7 +58,7 @@ namespace MusicQuiz.Data.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AudioFiles");
+                    b.ToTable("GSAudioFiles");
                 });
 
             modelBuilder.Entity("MusicQuiz.Data.Models.SongName", b =>
@@ -56,7 +69,7 @@ namespace MusicQuiz.Data.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AudioFileId")
+                    b.Property<int>("FSAudioFileId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -65,7 +78,7 @@ namespace MusicQuiz.Data.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AudioFileId")
+                    b.HasIndex("FSAudioFileId")
                         .IsUnique();
 
                     b.ToTable("SongNames");
@@ -73,18 +86,18 @@ namespace MusicQuiz.Data.Data.Migrations
 
             modelBuilder.Entity("MusicQuiz.Data.Models.SongName", b =>
                 {
-                    b.HasOne("MusicQuiz.Data.Models.AudioFile", "AudioFile")
-                        .WithOne("SongName")
-                        .HasForeignKey("MusicQuiz.Data.Models.SongName", "AudioFileId")
+                    b.HasOne("MusicQuiz.Data.Models.FSAudioFile", "FSAudioFile")
+                        .WithOne("Name")
+                        .HasForeignKey("MusicQuiz.Data.Models.SongName", "FSAudioFileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AudioFile");
+                    b.Navigation("FSAudioFile");
                 });
 
-            modelBuilder.Entity("MusicQuiz.Data.Models.AudioFile", b =>
+            modelBuilder.Entity("MusicQuiz.Data.Models.FSAudioFile", b =>
                 {
-                    b.Navigation("SongName");
+                    b.Navigation("Name");
                 });
 #pragma warning restore 612, 618
         }

@@ -20,10 +20,10 @@ namespace MusicQuiz
             TotalScore = 0;
             Rounds = new List<Round>();
             CurrentRound = 0;
-            List<AudioFile> audioFiles = new List<AudioFile>();        
+            List<FSAudioFile> audioFiles = new List<FSAudioFile>();        
         }
 
-        public void AddRound(string name, List<AudioFile> songs)
+        public void AddRound(string name, List<FSAudioFile> songs)
         {
             CurrentRound++;
             Rounds.Add(new Round(CurrentRound, name, songs));

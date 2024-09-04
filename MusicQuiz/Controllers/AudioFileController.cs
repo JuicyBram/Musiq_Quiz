@@ -25,18 +25,16 @@ public class AudioFileController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AudioFileDTO>>> GetAudioFiles()
     {
-        var audioFiles = await _context.AudioFiles
-                                       .Include(af => af.SongName)
+        var audioFiles = await _context.FSAudioFiles
+                                       .Include(af => af.Name)
                                        .ToListAsync();
 
         var audioFileDtos = audioFiles.Select(af => new AudioFileDTO
         {
             Id = af.Id,
-            Name = af.SongName?.Name, 
+            Name = af.Name?.Name, 
             FullSongBase64 = af.FullSongBase64,
-            GuitarSoloBase64 = af.GuitarSoloBase64,
             FullSongDuration = af.FullSongDuration,
-            GuitarSoloDuration = af.GituarSoloDuration
         }).ToList();
 
         return Ok(audioFileDtos);
@@ -45,8 +43,8 @@ public class AudioFileController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<AudioFileDTO>> GetAudioFile(int id)
     {
-        var audioFile = await _context.AudioFiles
-                                      .Include(af => af.SongName) 
+        var audioFile = await _context.FSAudioFiles
+                                      .Include(af => af.Name) 
                                       .FirstOrDefaultAsync(af => af.Id == id);  
 
         if (audioFile == null)
@@ -57,21 +55,19 @@ public class AudioFileController : ControllerBase
         var audioFileDto = new AudioFileDTO
         {
             Id = audioFile.Id,
-            Name = audioFile.SongName.Name,
+            Name = audioFile.Name.Name,
             FullSongBase64 = audioFile.FullSongBase64,
-            GuitarSoloBase64 = audioFile.GuitarSoloBase64,
             FullSongDuration = audioFile.FullSongDuration,
-            GuitarSoloDuration = audioFile.GituarSoloDuration
         };
 
         return Ok(audioFileDto);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAudioFile(int id, CreateAudioFileDTO audioFileDTO)
+    public async Task<IActionResult> PutAudioFile(int id, AudioFileDTO audioFileDTO)
     {
-        var audioFile = await _context.AudioFiles
-                                      .Include(af => af.SongName)
+        var audioFile = await _context.FSAudioFiles
+                                      .Include(af => af.Name)
                                       .FirstOrDefaultAsync(af => af.Id == id);
         
         if (audioFile == null)
@@ -84,7 +80,7 @@ public class AudioFileController : ControllerBase
 
         if (existingSongName != null)
         {
-            audioFile.SongName = existingSongName;
+            audioFile.Name = existingSongName;
         }
         else
         {
@@ -94,13 +90,11 @@ public class AudioFileController : ControllerBase
             };
 
             _context.SongNames.Add(newSongName);
-            audioFile.SongName = newSongName;
+            audioFile.Name = newSongName;
         }
 
         audioFile.FullSongBase64 = audioFileDTO.FullSongBase64;
-        audioFile.GuitarSoloBase64 = audioFileDTO.GuitarSoloBase64;
         audioFile.FullSongDuration = audioFileDTO.FullSongDuration;
-        audioFile.GituarSoloDuration = audioFileDTO.GuitarSoloDuration;
 
         _context.Entry(audioFile).State = EntityState.Modified;
 
@@ -123,10 +117,10 @@ public class AudioFileController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AudioFile>> PostAudioFile(AudioFileDTO audioFileDTO)
+    public async Task<ActionResult<FSAudioFile>> PostAudioFile(CreateAudioFileDTO createAudioFileDTO)
     {
         var existingSongName = await _context.SongNames
-            .FirstOrDefaultAsync(sn => sn.Name == audioFileDTO.Name);
+            .FirstOrDefaultAsync(sn => sn.Name == createAudioFileDTO.Name);
         
         SongName songName;
 
@@ -139,21 +133,19 @@ public class AudioFileController : ControllerBase
         {
             songName = new SongName
             {
-                Name = audioFileDTO.Name
+                Name = createAudioFileDTO.Name
             };
 
         }
 
-        var audioFile = new AudioFile
+        var audioFile = new FSAudioFile
         {
-            SongName = songName,
-            FullSongBase64 = audioFileDTO.FullSongBase64,
-            GuitarSoloBase64 = audioFileDTO.GuitarSoloBase64,
-            FullSongDuration = audioFileDTO.FullSongDuration,
-            GituarSoloDuration = audioFileDTO.GuitarSoloDuration
+            Name = songName,
+            FullSongBase64 = createAudioFileDTO.FullSongBase64,
+            FullSongDuration = createAudioFileDTO.FullSongDuration,
         };
 
-        _context.AudioFiles.Add(audioFile);
+        _context.FSAudioFiles.Add(audioFile);
         await _context.SaveChangesAsync();
 
         _context.SongNames.Add(songName);
@@ -165,13 +157,13 @@ public class AudioFileController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAudioFile(int id)
     {
-        var audioFile = await _context.AudioFiles.FindAsync(id);
+        var audioFile = await _context.FSAudioFiles.FindAsync(id);
         if (audioFile == null)
         {
             return NotFound();
         }
 
-        _context.AudioFiles.Remove(audioFile);
+        _context.FSAudioFiles.Remove(audioFile);
         await _context.SaveChangesAsync();
 
         return NoContent();
@@ -179,6 +171,6 @@ public class AudioFileController : ControllerBase
 
     private bool AudioFileExists(int id)
     {
-        return _context.AudioFiles.Any(e => e.Id == id);
+        return _context.FSAudioFiles.Any(e => e.Id == id);
     }
 }

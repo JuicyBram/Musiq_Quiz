@@ -9,7 +9,7 @@ namespace MusicQuiz.Data.Models;
 public class SongName
 {
     public int Id { get; set; }
-    public int AudioFileId { get; set; }
     public string Name { get; set; }
-    public AudioFile AudioFile { get; set; }
+    public int FSAudioFileId { get; set; }
+    public FSAudioFile FSAudioFile { get; set; }
 }
