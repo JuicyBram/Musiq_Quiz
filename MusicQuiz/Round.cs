@@ -8,6 +8,8 @@ namespace MusicQuiz
         public int Number { get; private set; }
         public string Name {  get; private set; }
         public int Score {  get; set; }
+        public int GuessTime { get; set; }
+        public int ExtraTime {  get; set; }
         public List<AudioFileDTO> Songs { get; private set; }
 
         public Round(int number, string name, List<AudioFileDTO> songs)
@@ -16,6 +18,8 @@ namespace MusicQuiz
             Name = name;
             Score = 0;
             Songs = songs;
+            GuessTime = 2000;
+            ExtraTime = 2000;
         }
     }
 }
