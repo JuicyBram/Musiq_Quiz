@@ -10,7 +10,7 @@ namespace MusicQuiz
         public int Id { get; private set; }
         public List<Round> Rounds {  get; private set; }
         public int CurrentRound {  get; private set; }
-        public int TotalScore {  get; private set; }
+        public int TotalScore {  get; set; }
 
 
         public Quiz()
