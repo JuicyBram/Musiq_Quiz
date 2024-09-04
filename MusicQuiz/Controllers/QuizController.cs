@@ -33,6 +33,12 @@ namespace MusicQuiz.Controllers
             return quiz;
         }
 
+        [HttpGet("openquizzes")]
+        public async Task<ActionResult<IEnumerable<Quiz>>> GetOpenQuizzes()
+        {
+            return GameList.Quizzes;
+        }
+
         [HttpGet("roundinfo/{id}/{roundnumber}")]
         public async Task<ActionResult<Round>> GetRoundInfo(int id, int roundnumber)
         {
