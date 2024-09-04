@@ -26,13 +26,13 @@ public class AudioFileController : ControllerBase
     public async Task<ActionResult<IEnumerable<AudioFileDTO>>> GetAudioFiles()
     {
         var audioFiles = await _context.AudioFiles
-                                       .Include(af => af.Name)
+                                       .Include(af => af.SongName)
                                        .ToListAsync();
 
         var audioFileDtos = audioFiles.Select(af => new AudioFileDTO
         {
             Id = af.Id,
-            Name = af.Name?.Name, 
+            Name = af.SongName?.Name, 
             FullSongBase64 = af.FullSongBase64,
             GuitarSoloBase64 = af.GuitarSoloBase64,
             FullSongDuration = af.FullSongDuration,
@@ -46,7 +46,7 @@ public class AudioFileController : ControllerBase
     public async Task<ActionResult<AudioFileDTO>> GetAudioFile(int id)
     {
         var audioFile = await _context.AudioFiles
-                                      .Include(af => af.Name) 
+                                      .Include(af => af.SongName) 
                                       .FirstOrDefaultAsync(af => af.Id == id);  
 
         if (audioFile == null)
@@ -57,7 +57,7 @@ public class AudioFileController : ControllerBase
         var audioFileDto = new AudioFileDTO
         {
             Id = audioFile.Id,
-            Name = audioFile.Name.Name,
+            Name = audioFile.SongName.Name,
             FullSongBase64 = audioFile.FullSongBase64,
             GuitarSoloBase64 = audioFile.GuitarSoloBase64,
             FullSongDuration = audioFile.FullSongDuration,
@@ -68,30 +68,23 @@ public class AudioFileController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAudioFile(int id, AudioFileDTO audioFileDTO)
+    public async Task<IActionResult> PutAudioFile(int id, CreateAudioFileDTO audioFileDTO)
     {
-        if (id != audioFileDTO.Id)
-        {
-            return BadRequest();
-        }
-
-        // Retrieve the existing AudioFile entity including related Name data
         var audioFile = await _context.AudioFiles
-                                      .Include(af => af.Name)
+                                      .Include(af => af.SongName)
                                       .FirstOrDefaultAsync(af => af.Id == id);
-
+        
         if (audioFile == null)
         {
             return NotFound();
         }
 
-        // Find or create the SongName based on the provided DTO
         var existingSongName = await _context.SongNames
                                              .FirstOrDefaultAsync(sn => sn.Name == audioFileDTO.Name);
 
         if (existingSongName != null)
         {
-            audioFile.Name = existingSongName;
+            audioFile.SongName = existingSongName;
         }
         else
         {
@@ -101,16 +94,14 @@ public class AudioFileController : ControllerBase
             };
 
             _context.SongNames.Add(newSongName);
-            audioFile.Name = newSongName;
+            audioFile.SongName = newSongName;
         }
 
-        // Update the audio file properties based on the DTO
         audioFile.FullSongBase64 = audioFileDTO.FullSongBase64;
         audioFile.GuitarSoloBase64 = audioFileDTO.GuitarSoloBase64;
         audioFile.FullSongDuration = audioFileDTO.FullSongDuration;
         audioFile.GituarSoloDuration = audioFileDTO.GuitarSoloDuration;
 
-        // Mark the entity as modified
         _context.Entry(audioFile).State = EntityState.Modified;
 
         try
@@ -128,7 +119,6 @@ public class AudioFileController : ControllerBase
                 throw;
             }
         }
-
         return NoContent();
     }
 
@@ -156,7 +146,7 @@ public class AudioFileController : ControllerBase
 
         var audioFile = new AudioFile
         {
-            Name = songName,
+            SongName = songName,
             FullSongBase64 = audioFileDTO.FullSongBase64,
             GuitarSoloBase64 = audioFileDTO.GuitarSoloBase64,
             FullSongDuration = audioFileDTO.FullSongDuration,

@@ -23,9 +23,11 @@ public class MusicQuizDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AudioFile>()
-            .HasOne(a => a.Name)
+            .HasOne(a => a.SongName)
             .WithOne(s => s.AudioFile)
-            .HasForeignKey<SongName>(s => s.AudioFileId); // Stel de Foreign Key in op SongName
+            .HasForeignKey<SongName>(s => s.AudioFileId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade); // Stel de Foreign Key in op SongName
 
         base.OnModelCreating(modelBuilder);
     }
