@@ -52,7 +52,17 @@ namespace MusicQuiz.Controllers
             //get list of songs for the current round from DB
             List<AudioFileDTO> songs = new List<AudioFileDTO>();
             AudioFileController controller = new AudioFileController(_context);
-            for (int i = 2; i < 5; i++)
+            int[] ids;
+
+            switch (roundnumber){
+                case 1:
+                    ids = getIdsRound1();
+                    break;
+                default:
+                    ids = [];
+                    break;
+            }
+            foreach(int i in ids)
             {
                 AudioFileDTO song = await controller.GetAudioFileDTO(i);
                 if (song != null)
@@ -62,6 +72,22 @@ namespace MusicQuiz.Controllers
             }
             quiz.AddRound("solos", songs);
             return quiz.Rounds[roundnumber-1];
+        }
+
+        private int[] getIdsRound1()
+        {
+            Random random = new Random();
+            List<int> ids = new List<int>();
+            for (int i = 0; i < 5; i++)
+            {
+                int num = random.Next(2, 8);
+                while (ids.Contains(num))
+                {
+                    num = random.Next(2, 8);
+                }
+                ids.Add(num);
+            }
+            return ids.ToArray();
         }
 
         [HttpPost("roundscore/{id}/{roundnumber}/{score}")]
