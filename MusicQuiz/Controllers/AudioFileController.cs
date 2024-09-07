@@ -43,7 +43,7 @@ public class AudioFileController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<AudioFileDTO>> GetAudioFile(int id)
     {
-        Task<AudioFileDTO> audioFileDto = GetAudioFileDTO(id);
+        AudioFileDTO audioFileDto = await GetAudioFileDTO(id);
         if (audioFileDto == null)
         {
             return NotFound();

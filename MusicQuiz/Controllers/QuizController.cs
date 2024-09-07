@@ -80,10 +80,10 @@ namespace MusicQuiz.Controllers
             List<int> ids = new List<int>();
             for (int i = 0; i < 5; i++)
             {
-                int num = random.Next(2, 8);
+                int num = random.Next(2, 9);
                 while (ids.Contains(num))
                 {
-                    num = random.Next(2, 8);
+                    num = random.Next(2, 9);
                 }
                 ids.Add(num);
             }
